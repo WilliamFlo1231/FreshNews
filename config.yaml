@@ -1,0 +1,21 @@
+AP:
+  url: https://apnews.com
+  search_button: //*[@class="SearchOverlay-search-button"]
+  search_bar: //*[@class="SearchOverlay-search-input"]
+  search_results_container: //*[@class="SearchResultsModule-results"]
+  search_results: //*[@class="PagePromo"]
+  next_page_button: //*[@class="Pagination-nextPage"]
+new:
+  image: Image
+  title: PagePromo-title
+  description: PagePromo-description
+  date_container: PagePromo-date
+  timestamp: data-timestamp
+  money_amount_regex: (?:\$|£|\€|(?:USD|dollars))(\d+(?:,\d{3})*(?:\.\d{1,2})?)
+first_child: :first-child
+paths:
+  output: ./output
+delays:
+  short: 10
+  medium: 15
+  long: 20
