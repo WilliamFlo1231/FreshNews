@@ -8,7 +8,10 @@ from utils.helper_functions import download_image, clean_filename
 class APNew:
     def __init__(self, search_phrase, web_new) -> None:
         self.title = web_new.find_element(By.CLASS_NAME, CONFIG.new.title).text
-        self.description = web_new.find_element(By.CLASS_NAME, CONFIG.new.description).text
+        try:
+            self.description = web_new.find_element(By.CLASS_NAME, CONFIG.new.description).text
+        except NoSuchElementException:
+            self.description = 'No Description'
         date_container = web_new.find_element(By.CLASS_NAME, CONFIG.new.date_container)
         unix_timestamp = date_container.find_element(By.CSS_SELECTOR,
                                                      CONFIG.first_child).get_attribute(CONFIG.new.timestamp)
@@ -19,6 +22,7 @@ class APNew:
         try:
             web_picture = web_new.find_element(By.CLASS_NAME, CONFIG.new.image)
             picture_url = web_picture.get_attribute('src')
-            download_image(picture_url, f'{CURRENT_DATE_FOLDER}/{clean_filename(self.title)}.jpg')
+            self.picture = f'{CURRENT_DATE_FOLDER}/{clean_filename(self.title)}.jpg'
+            download_image(picture_url, self.picture)
         except NoSuchElementException:
-            self.picture = None
+            self.picture = 'No Picture'
