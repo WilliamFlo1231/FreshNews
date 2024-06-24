@@ -1,5 +1,6 @@
 AP:
   url: https://apnews.com
+  logo: //*[@class="Page-header-bar-logo"]
   search_button: //*[@class="SearchOverlay-search-button"]
   search_bar: //*[@class="SearchOverlay-search-input"]
   search_results_container: //*[@class="SearchResultsModule-results"]
@@ -16,6 +17,6 @@ first_child: :first-child
 paths:
   output: ./output
 delays:
-  short: 10
+  short: 5
   medium: 15
   long: 20

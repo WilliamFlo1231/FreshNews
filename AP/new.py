@@ -12,13 +12,17 @@ class APNew:
             self.description = web_new.find_element(By.CLASS_NAME, CONFIG.new.description).text
         except NoSuchElementException:
             self.description = 'No Description'
+        title_description = f'{self.title} {self.description}'
         date_container = web_new.find_element(By.CLASS_NAME, CONFIG.new.date_container)
         unix_timestamp = date_container.find_element(By.CSS_SELECTOR,
                                                      CONFIG.first_child).get_attribute(CONFIG.new.timestamp)
         self.date = datetime.fromtimestamp(int(unix_timestamp) / 1000)
         amount_matches = re.findall(CONFIG.new.money_amount_regex,
-                                    f'{self.title} {self.description}')
+                                    title_description)
+        
         self.has_money_amount = bool(amount_matches)
+        self.phrase_count = len(re.findall(search_phrase.lower(),
+                                           title_description.lower()))
         try:
             web_picture = web_new.find_element(By.CLASS_NAME, CONFIG.new.image)
             picture_url = web_picture.get_attribute('src')

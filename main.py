@@ -10,7 +10,7 @@ if __name__ == '__main__':
     CONFIG = load_config('config.yaml')
     CURRENT_DATE = datetime.today()
     CURRENT_DATE_FOLDER = f'{CONFIG.paths.output}/{CURRENT_DATE:%m_%d_%Y %H-%M-%S}'
-    phrase = 'Tesla'
+    phrase = 'Climate change'
 
     from AP.new import APNew
 
@@ -35,19 +35,22 @@ if __name__ == '__main__':
     all_news = []
 
     while keep_searching:
-        browser.wait_until_element_is_visible(CONFIG.AP.search_results_container, 15)
+        browser.wait_until_element_is_visible(CONFIG.AP.search_results_container,
+                                              CONFIG.delays.medium)
         search_results = browser.find_element(CONFIG.AP.search_results_container)
-        browser.wait_until_element_is_visible(CONFIG.AP.search_results, 15)
+        browser.wait_until_element_is_visible(CONFIG.AP.search_results,
+                                              CONFIG.delays.medium)
         all_news.extend([APNew(phrase, new).__dict__ for new in
                 search_results.find_elements(By.CLASS_NAME, 'PagePromo')])
         if page_counter == 2:
             next = browser.find_element(CONFIG.AP.next_page_button)
             base_next_url = next.find_element(By.CSS_SELECTOR,
                                             CONFIG.first_child).get_attribute('href')
-        if page_counter == 5:
-            break
         browser.go_to(f'{base_next_url[:-1]}{page_counter}')
         page_counter += 1
+        if page_counter == 20:
+            break
+    logging.info('Saving News Report')
     output_data = pd.DataFrame(all_news)
     output_data['date'] = output_data['date'].apply(lambda x: x.strftime('%Y-%m-%d'))
     output_data.to_excel(f'{CURRENT_DATE_FOLDER}/{phrase}.xlsx', index=False)
