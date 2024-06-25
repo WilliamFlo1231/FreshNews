@@ -3,7 +3,6 @@ from datetime import datetime
 from selenium.webdriver.common.by import By
 from dateutil.relativedelta import relativedelta
 from selenium.common.exceptions import NoSuchElementException
-from __main__ import CONFIG, CURRENT_DATE, CURRENT_DATE_FOLDER
 from utils.helper_functions import download_image, clean_filename, first_date_of_month
 
 class OlderNewException(Exception):
@@ -13,7 +12,7 @@ class OlderNewException(Exception):
 
 
 class APNew:
-    def __init__(self, web_new) -> None:
+    def __init__(self, CONFIG, CURRENT_DATE, CURRENT_DATE_FOLDER, web_new) -> None:
         months_to_review = 0 if CONFIG.months_to_review <= 1 else -(CONFIG.months_to_review - 1)
         self.title = web_new.find_element(By.CLASS_NAME, CONFIG.new.title).text
         try:
