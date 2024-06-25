@@ -1,12 +1,20 @@
 import re
 from datetime import datetime
 from selenium.webdriver.common.by import By
-from __main__ import CONFIG, CURRENT_DATE_FOLDER
+from dateutil.relativedelta import relativedelta
 from selenium.common.exceptions import NoSuchElementException
-from utils.helper_functions import download_image, clean_filename
+from __main__ import CONFIG, CURRENT_DATE, CURRENT_DATE_FOLDER
+from utils.helper_functions import download_image, clean_filename, first_date_of_month
+
+class OlderNewException(Exception):
+    def __init__(self, message='New is not within allowed date range.'):
+        self.message = message
+        super().__init__(self.message)
+
 
 class APNew:
-    def __init__(self, search_phrase, web_new) -> None:
+    def __init__(self, web_new) -> None:
+        months_to_review = 0 if CONFIG.months_to_review <= 1 else -(CONFIG.months_to_review - 1)
         self.title = web_new.find_element(By.CLASS_NAME, CONFIG.new.title).text
         try:
             self.description = web_new.find_element(By.CLASS_NAME, CONFIG.new.description).text
@@ -17,11 +25,14 @@ class APNew:
         unix_timestamp = date_container.find_element(By.CSS_SELECTOR,
                                                      CONFIG.first_child).get_attribute(CONFIG.new.timestamp)
         self.date = datetime.fromtimestamp(int(unix_timestamp) / 1000)
+        oldest_date = first_date_of_month(CURRENT_DATE + relativedelta(months=months_to_review))
+        if self.date <= oldest_date:
+            raise OlderNewException
         amount_matches = re.findall(CONFIG.new.money_amount_regex,
                                     title_description)
         
         self.has_money_amount = bool(amount_matches)
-        self.phrase_count = len(re.findall(search_phrase.lower(),
+        self.phrase_count = len(re.findall(CONFIG.phrase.lower(),
                                            title_description.lower()))
         try:
             web_picture = web_new.find_element(By.CLASS_NAME, CONFIG.new.image)

@@ -1,3 +1,5 @@
+months_to_review: 0
+phrase: google
 AP:
   url: https://apnews.com
   logo: //*[@class="Page-header-bar-logo"]
@@ -20,3 +22,4 @@ delays:
   short: 5
   medium: 15
   long: 20
+max_retries: 3
