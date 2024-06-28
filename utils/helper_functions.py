@@ -1,6 +1,5 @@
 import re
 import logging
-import calendar
 import requests
 
 def download_image(url, save_path):

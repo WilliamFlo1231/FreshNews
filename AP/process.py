@@ -1,4 +1,3 @@
-import os
 import logging
 from AP.new import APNew
 from RPA.Browser.Selenium import Selenium
@@ -6,10 +5,9 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver import FirefoxOptions
 
 class AP:
-    def __init__(self, CONFIG, CURRENT_DATE, CURRENT_DATE_FOLDER):
+    def __init__(self, CONFIG, CURRENT_DATE):
         self.CONFIG = CONFIG
         self.CURRENT_DATE = CURRENT_DATE
-        self.CURRENT_DATE_FOLDER = CURRENT_DATE_FOLDER
         self.browser = Selenium()
         self.news = []
 
@@ -66,6 +64,6 @@ class AP:
         for web_new in search_results.find_elements(By.CLASS_NAME, 'PagePromo'):
             try:
                 self.news.append(APNew(self.CONFIG, self.CURRENT_DATE,
-                                       self.CURRENT_DATE_FOLDER, web_new).__dict__)
+                                       self.CONFIG.paths.output, web_new).__dict__)
             except Exception as e:
                 logging.warning(e)
